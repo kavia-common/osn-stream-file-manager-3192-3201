@@ -1,8 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders top navigation and upload controls', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  // Top nav should have brand
+  expect(screen.getByText(/OSN Stream Manager/i)).toBeInTheDocument();
+  // Theme toggle button
+  expect(screen.getByRole('button', { name: /toggle/i })).toBeInTheDocument();
+  // Navigate to Uploads
+  expect(screen.getByRole('button', { name: /Uploads/i })).toBeInTheDocument();
 });

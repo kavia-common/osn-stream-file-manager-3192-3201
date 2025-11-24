@@ -1,82 +1,80 @@
-# Lightweight React Template for KAVIA
+# OSN Dashboard Frontend
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+React dashboard to upload and manage .ts files and metadata for OSN set-top box streaming.
+
+Theme: Ocean Professional (primary #2563EB, secondary #F59E0B, background #f9fafb, surface #ffffff, text #111827)
 
 ## Features
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+- Layout: TopNav with theme toggle, Sidebar, main Container
+- UploadPanel: drag-and-drop and form (title, type, language, bitrate, duration) validating .ts
+- Files: list, filters, details modal, update/delete
+- API client and endpoints for GET/POST/PATCH/DELETE /files
+- Mock server fallback if no API base or feature flag `mockApi`
+- Accessibility: aria labels, keyboard nav, live regions
+- Basic smoke test
 
-## Getting Started
+## Quick start
 
-In the project directory, you can run:
+- Install: `npm install`
+- Run dev: `npm start`
+- Run tests: `npm test`
+- Build: `npm run build`
 
-### `npm start`
+## Environment variables
 
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Place in `.env` (do not commit secrets). Example `.env.example`:
 
-### `npm test`
-
-Launches the test runner in interactive watch mode.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-## Customization
-
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
+```
+REACT_APP_API_BASE=http://localhost:3001
+REACT_APP_BACKEND_URL=
+REACT_APP_WS_URL=
+REACT_APP_FRONTEND_URL=http://localhost:3000
+REACT_APP_LOG_LEVEL=info
+REACT_APP_FEATURE_FLAGS=mockApi
 ```
 
-### Components
+Precedence for API base: `REACT_APP_API_BASE` then `REACT_APP_BACKEND_URL`. If neither is set, mock API will be enabled automatically.
 
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
+Feature flags:
+- `mockApi` — force in-memory mock server even if backend exists
 
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
+## Using with real backend
 
-## Learn More
+- Ensure backend implements:
+  - GET /files
+  - POST /files (multipart: file + fields: title, type, language, bitrate, duration)
+  - GET /files/:id
+  - PATCH /files/:id
+  - DELETE /files/:id
+- Set `REACT_APP_API_BASE` to backend base URL
+- Start frontend: `npm start`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Using mock server
 
-### Code Splitting
+- Omit `REACT_APP_API_BASE` (or set `REACT_APP_FEATURE_FLAGS=mockApi`)
+- The app installs a fetch interceptor to serve in-memory data
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Optional local proxy
 
-### Analyzing the Bundle Size
+For local dev without CORS:
+- If `REACT_APP_API_BASE` is not set and your backend runs on `http://localhost:3001`, the included `src/setupProxy.js` proxies `/files` there automatically when starting dev server.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Project structure
 
-### Making a Progressive Web App
+- src/api: API client and endpoints
+- src/components: UI components (Layout, Upload, Files, Common)
+- src/hooks: hooks (useEnv, useFiles, useUpload)
+- src/mocks: mockServer
+- src/utils: helpers
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Accessibility
 
-### Advanced Configuration
+- Buttons/controls include aria labels
+- Live region provided for status updates
+- Keyboard operable: modal focus trapping and close control
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Notes
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- This project uses create-react-app and vanilla CSS, no heavy UI frameworks.
+- Ensure `.env` variables are prefixed with `REACT_APP_` for CRA.
