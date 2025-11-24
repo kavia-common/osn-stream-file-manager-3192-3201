@@ -1,0 +1,4 @@
+{
+    "command": "npm install",
+    "working_directory": "/home/kavia/workspace/code-generation/osn-stream-file-manager-3192-3201/osn_dashboard_frontend"
+}
